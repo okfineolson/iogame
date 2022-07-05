@@ -1,12 +1,13 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
 const applyCollisions = require('./collisions');
-
+const Chest = require('./chest')
 class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
     this.bullets = [];
+    this.chest = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
     setInterval(this.update.bind(this), 1000 / 60);
@@ -22,7 +23,15 @@ class Game {
 
     
   }
-
+ addchest() {
+  
+  for (var i=0;i<5;i++){
+    
+    const x = Constants.MAP_SIZE * Math.random();
+    const y = Constants.MAP_SIZE * Math.random();
+    this.chest[i] = new Chest(i, x, y, 0 );
+  }
+ }
   removePlayer(socket) {
     delete this.sockets[socket.id];
     delete this.players[socket.id];
@@ -31,6 +40,12 @@ class Game {
   handleInput(socket, dir) {
     if (this.players[socket.id]) {
       this.players[socket.id].setDirection(dir);
+    }
+  }
+
+  handlestInput(socket, dir) {
+    if (this.players[socket.id]) {
+      this.players[socket.id].setstDirection(dir);
     }
   }
 
@@ -106,12 +121,15 @@ class Game {
     const nearbyBullets = this.bullets.filter(
       b => b.distanceTo(player) <= Constants.MAP_SIZE / 2,
     );
-
+    const nearbyChest = this.chest.filter(
+      c => c.distanceTo(player) <= Constants.MAP_SIZE / 2,
+    );
     return {
       t: Date.now(),
       me: player.serializeForUpdate(),
       others: nearbyPlayers.map(p => p.serializeForUpdate()),
       bullets: nearbyBullets.map(b => b.serializeForUpdate()),
+      chest: nearbyChest.map(c => c.serializeForUpdate()),
       leaderboard,
     };
   }

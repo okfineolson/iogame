@@ -26,7 +26,7 @@ window.addEventListener('resize', debounce(40, setCanvasDimensions));
 let animationFrameRequestId;
 
 function render() {
-  const { me, others, bullets } = getCurrentState();//,chest
+  const { me, others, bullets,chest } = getCurrentState();//,chest
   if (me) {
     // Draw background
     renderBackground(me.x, me.y);
@@ -38,11 +38,10 @@ function render() {
 
     // Draw all bullets
     bullets.forEach(renderBullet.bind(null, me));
-    //const x = Math.round(Math.random()*MAP_SIZE);const y = Math.round(Math.random()*MAP_SIZE)
-
-    context.drawImage(getAsset('ship.svg'),canvas.width / 2 - me.x, canvas.height / 2 - me.y,100,100)
-    //chest.forEach(rendercheast.bind(null, me));
-    //rendercheast().bind(null,me)
+    
+    // Draw all chest
+    chest.forEach(renderchest.bind(null, me));
+   
     // Draw all players
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
@@ -51,16 +50,19 @@ function render() {
   // Rerun this render function on the next frame
   animationFrameRequestId = requestAnimationFrame(render);
 }
-function rendercheast(chest){
+
+function renderchest(me ,chest) {
   const { x, y } = chest;
   context.drawImage(
     getAsset('ship.svg'),
-    Math.round(x),
-    Math.round(y),
+    canvas.width / 2 + x - me.x - BULLET_RADIUS,
+    canvas.height / 2 + y - me.y - BULLET_RADIUS,
     200,
     200,
   );
+  
 }
+
 function renderBackground(x, y) {
   const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
   const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;

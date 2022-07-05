@@ -10,5 +10,10 @@ class Chest extends ObjectClass {
     super.update(dt);
     return this.state;
   }
+  removechest() {
+    this.state = 1;
+  }
 }
+
+
 module.exports = Chest;

@@ -1,9 +1,10 @@
 class Object {
-  constructor(id, x, y, dir, speed) {
+  constructor(id, x, y, dir,speed) {
     this.id = id;
     this.x = x;
     this.y = y;
     this.direction = dir;
+  
     this.speed = speed;
     
   }
@@ -20,6 +21,10 @@ class Object {
   }
 
   setDirection(dir) {
+    this.direction = dir;
+  }
+
+  setstDirection(dir) {
     this.direction = dir;
   }
 

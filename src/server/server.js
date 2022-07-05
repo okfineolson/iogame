@@ -34,6 +34,7 @@ io.on('connection', socket => {
 
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
+  socket.on(Constants.MSG_TYPES.stInput, handlestInput);
   socket.on('disconnect', onDisconnect);
 });
 
@@ -42,10 +43,14 @@ const game = new Game();
 
 function joinGame(username) {
   game.addPlayer(this, username);
+  game.addchest()
 }
 
 function handleInput(dir) {
   game.handleInput(this, dir);
+}
+function handlestInput(dir) {
+  game.handlestInput(this, dir);
 }
 
 function onDisconnect() {
