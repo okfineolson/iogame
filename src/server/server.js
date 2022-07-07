@@ -49,6 +49,7 @@ function joinGame(username) {
 function handleInput(dir) {
   game.handleInput(this, dir);
 }
+
 function handlestInput(dir) {
   game.handlestInput(this, dir);
 }

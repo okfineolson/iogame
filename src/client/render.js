@@ -6,7 +6,7 @@ import { getCurrentState } from './state';
 
 const Constants = require('../shared/constants');
 
-const { PLAYER_RADIUS, PLAYER_MAX_HP, BULLET_RADIUS, MAP_SIZE } = Constants;
+const { PLAYER_RADIUS, PLAYER_MAX_HP, BULLET_RADIUS, MAP_SIZE, CHEST_MAX_HP} = Constants;
 
 // Get the canvas graphics context
 const canvas = document.getElementById('game-canvas');
@@ -52,15 +52,30 @@ function render() {
 }
 
 function renderchest(me ,chest) {
-  const { x, y } = chest;
+  const { x, y} = chest;
   context.drawImage(
     getAsset('ship.svg'),
-    canvas.width / 2 + x - me.x - BULLET_RADIUS,
-    canvas.height / 2 + y - me.y - BULLET_RADIUS,
-    200,
-    200,
+    canvas.width / 2 + x - me.x ,
+    canvas.height / 2 + y - me.y ,
+    100,
+    100,
   );
   
+  // Draw health bar
+  context.fillStyle = 'white';
+  context.fillRect(
+    canvas.width / 2 + x - me.x ,
+    canvas.height / 2 + y - me.y   - 20,
+    100,
+    2,
+  );
+  context.fillStyle = 'red';
+  context.fillRect(
+    x + (canvas.width / 2  - me.x) ,
+    canvas.height / 2 + y - me.y   - 20,
+    100 *  (1 - ((chest.hp) / CHEST_MAX_HP)),
+    2,
+    );
 }
 
 function renderBackground(x, y) {

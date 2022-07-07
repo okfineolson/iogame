@@ -1,13 +1,14 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
 const applyCollisions = require('./collisions');
+const applychestCollisions = require('./chestcollisions');
 const Chest = require('./chest')
 class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
     this.bullets = [];
-    this.chest = [];
+    this.chests = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
     setInterval(this.update.bind(this), 1000 / 60);
@@ -27,9 +28,9 @@ class Game {
   
   for (var i=0;i<5;i++){
     
-    const x = Constants.MAP_SIZE * Math.random();
-    const y = Constants.MAP_SIZE * Math.random();
-    this.chest[i] = new Chest(i, x, y, 0 );
+    const x = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
+    const y = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
+    this.chests[i] = new Chest(i, x, y, 0 );
   }
  }
   removePlayer(socket) {
@@ -42,7 +43,6 @@ class Game {
       this.players[socket.id].setDirection(dir);
     }
   }
-
   handlestInput(socket, dir) {
     if (this.players[socket.id]) {
       this.players[socket.id].setstDirection(dir);
@@ -64,7 +64,20 @@ class Game {
       }
     });
     this.bullets = this.bullets.filter(bullet => !bulletsToRemove.includes(bullet));
+    //update each chest
+    const chestsToRemove = [];
+    
+    this.chests.forEach(chest => {
+      //console.log(chest.hp)
+     
+    });
+    //this.chests = this.chests.filter(chest => !chestsToRemove.includes(chest));
+    
+    
+    const destroyedBulletsfromchest = applychestCollisions(this.chests, this.bullets);
 
+    this.bullets = this.bullets.filter(bullet => !destroyedBulletsfromchest.includes(bullet));
+    
     // Update each player
     Object.keys(this.sockets).forEach(playerID => {
       const player = this.players[playerID];
@@ -76,6 +89,7 @@ class Game {
 
     // Apply collisions, give players score for hitting bullets
     const destroyedBullets = applyCollisions(Object.values(this.players), this.bullets);
+
     destroyedBullets.forEach(b => {
       if (this.players[b.parentID]) {
         this.players[b.parentID].onDealtDamage();
@@ -83,6 +97,9 @@ class Game {
     });
     this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
 
+    
+    
+    this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
     // Check if any players are dead
     Object.keys(this.sockets).forEach(playerID => {
       const socket = this.sockets[playerID];
@@ -121,9 +138,11 @@ class Game {
     const nearbyBullets = this.bullets.filter(
       b => b.distanceTo(player) <= Constants.MAP_SIZE / 2,
     );
-    const nearbyChest = this.chest.filter(
+
+    const nearbyChest = this.chests.filter(
       c => c.distanceTo(player) <= Constants.MAP_SIZE / 2,
     );
+
     return {
       t: Date.now(),
       me: player.serializeForUpdate(),

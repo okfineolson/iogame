@@ -19,6 +19,7 @@ function onkeybordInput(e){
     case "s":
     handleInputkey(0,-1);
         break;
+    
   }
 }
 function onTouchInput(e) {

@@ -4,14 +4,15 @@ class Object {
     this.x = x;
     this.y = y;
     this.direction = dir;
-  
     this.speed = speed;
     
   }
 
   update(dt) {
+    
     this.x += dt * this.speed * Math.sin(this.direction);
     this.y -= dt * this.speed * Math.cos(this.direction);
+   
   }
 
   distanceTo(object) {
@@ -27,7 +28,7 @@ class Object {
   setstDirection(dir) {
     this.direction = dir;
   }
-
+  
   serializeForUpdate() {
     return {
       id: this.id,
