@@ -7,10 +7,18 @@ class Chest extends ObjectClass {
     super(id, x, y, state);
     this.hp = Constants.CHEST_MAX_HP;
     this.state = 0
+    this.players = []
   }
   update(dt) {
     super.update(dt);
     return this.hp <= 0;
+  }
+  addplayers(playerID){
+    this.removePlayer(playerID)
+    this.players.push(playerID)
+  }
+  removePlayer(playerID){
+    this.players = this.players.filter(item => item != playerID)
   }
   removechest() {
     this.state = 1;

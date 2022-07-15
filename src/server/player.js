@@ -21,17 +21,25 @@ class Player extends ObjectClass {
     // Make sure the player stays in bounds
     this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
     this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
-
     // Fire a bullet, if needed
     this.fireCooldown -= dt;
+    //console.log(this.fireCooldown)
     if (this.fireCooldown <= 0) {
       this.fireCooldown += Constants.PLAYER_FIRE_COOLDOWN;
       return new Bullet(this.id, this.x, this.y, this.direction);
+    }else{
+      this.fireCooldown+=dt;
     }
 
     return null;
   }
-
+  openclosefire(){
+    if(this.fireCooldown == 0){
+      this.fireCooldown = 1000;
+    }else{
+      this.fireCooldown = 0;
+    }
+  }
   takeBulletDamage() {
     this.hp -= Constants.BULLET_DAMAGE;
   }
@@ -39,7 +47,9 @@ class Player extends ObjectClass {
   onDealtDamage() {
     this.score += Constants.SCORE_BULLET_HIT;
   }
-
+  onOpenChest(score) {
+    this.score += score;
+  }
   serializeForUpdate() {
     return {
       ...(super.serializeForUpdate()),

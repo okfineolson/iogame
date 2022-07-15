@@ -8,18 +8,23 @@ function onMouseInput(e) {
 function onkeybordInput(e){
   switch (e.key) {
     case "w":
-    handleInputkey(0,0);
+    handleInputkey(0,0,0);
         break;
     case "a":
-    handleInputkey(-1,0);
+    handleInputkey(-1,0,0);
         break;
     case "d":
-    handleInputkey(1,0);
+    handleInputkey(1,0,0);
         break;
     case "s":
-    handleInputkey(0,-1);
+    handleInputkey(0,-1,0);
         break;
-    
+    case "j":
+    handleInputkey(-999,0,1);
+        break;
+    case "k":
+    handleInputkey(-998,0,1);
+        break;
   }
 }
 function onTouchInput(e) {
@@ -32,10 +37,15 @@ function handleInput(x, y) {
   updatebulletDirection(dir);
   //alert(dir)
 }
-function handleInputkey(x,y) {
-  const dir = Math.atan2(x,y);
-  updateDirection(dir);
+function handleInputkey(x,y,state) {
+  if(state == 1){
+    updateDirection(x);
+  }else{
+    const dir = Math.atan2(x,y);
+    updateDirection(dir);
+  }
 }
+
 export function startCapturingInput() {
   //window.addEventListener('mousemove', onMouseInput);
   window.addEventListener('click', onMouseInput);

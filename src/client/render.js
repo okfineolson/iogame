@@ -53,12 +53,28 @@ function render() {
 
 function renderchest(me ,chest) {
   const { x, y} = chest;
+  //draw chest
   context.drawImage(
     getAsset('ship.svg'),
     canvas.width / 2 + x - me.x ,
     canvas.height / 2 + y - me.y ,
     100,
     100,
+  );
+  //draw console
+  context.drawImage(
+    getAsset('ship.svg'),
+    canvas.width / 2 + x - me.x +50,
+    canvas.height / 2 + y - me.y +150,
+    50,
+    50,
+  );
+  context.drawImage(
+    getAsset('ship.svg'),
+    canvas.width / 2 + x - me.x ,
+    canvas.height / 2 + y - me.y +150,
+    50,
+    50,
   );
   
   // Draw health bar

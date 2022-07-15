@@ -2,13 +2,16 @@ const Constants = require('../shared/constants');
 const Player = require('./player');
 const applyCollisions = require('./collisions');
 const applychestCollisions = require('./chestcollisions');
-const Chest = require('./chest')
+const Chest = require('./chest');
+const Obstacle = require('./obstacle');
+const { constant } = require('lodash');
 class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
     this.bullets = [];
     this.chests = [];
+    this.obstacle = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
     setInterval(this.update.bind(this), 1000 / 60);
@@ -24,28 +27,32 @@ class Game {
 
     
   }
- addchest() {
+  addchest() {
   
   for (var i=0;i<5;i++){
     
     const x = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
     const y = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
     this.chests[i] = new Chest(i, x, y, 0 );
+    this.obstacle[i] = new Obstacle(i,x,y,100,100)
   }
- }
+  }
   removePlayer(socket) {
     delete this.sockets[socket.id];
     delete this.players[socket.id];
   }
 
+
   handleInput(socket, dir) {
     if (this.players[socket.id]) {
-      this.players[socket.id].setDirection(dir);
-    }
-  }
-  handlestInput(socket, dir) {
-    if (this.players[socket.id]) {
-      this.players[socket.id].setstDirection(dir);
+      if(dir == -999){
+        this.players[socket.id].setspeed(0);
+      }else if(dir == -998){
+        this.players[socket.id].openclosefire()
+      }else{
+        this.players[socket.id].setspeed(Constants.PLAYER_SPEED);
+        this.players[socket.id].setstDirection(dir);
+      }
     }
   }
 
@@ -66,18 +73,43 @@ class Game {
     this.bullets = this.bullets.filter(bullet => !bulletsToRemove.includes(bullet));
     //update each chest
     const chestsToRemove = [];
-    
+    const obstToRemove = [];
     this.chests.forEach(chest => {
       //console.log(chest.hp)
-     
-    });
-    //this.chests = this.chests.filter(chest => !chestsToRemove.includes(chest));
+      if (chest.hp <= 0 && this.chests != undefined) {
+        // Destroy this bullet
+        chestsToRemove.push(chest);
+        this.obstacle.forEach(ob =>{
+          if(ob.id == chest.id){
+            obstToRemove.push(ob);
+          }})
+        const x = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
+        const y = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
+        var i = this.chests[this.chests.length-1].id+1
+        
+        this.chests.push(new Chest(i, x, y, 0 ))
+        this.obstacle.push(new Obstacle(i,x,y,100,100))
+      }
+    })
+    this.obstacle = this.obstacle.filter(obst => !obstToRemove.includes(obst))
+    this.chests = this.chests.filter(chest => !chestsToRemove.includes(chest));
     
     
-    const destroyedBulletsfromchest = applychestCollisions(this.chests, this.bullets);
+    const destroyedBulletsfromchest = applychestCollisions(this.chests, this.bullets,this.players);
 
     this.bullets = this.bullets.filter(bullet => !destroyedBulletsfromchest.includes(bullet));
     
+    //check if player hit the obstacle
+    Object.keys(this.sockets).forEach(playerID => {
+      const player = this.players[playerID];
+      for(const obse of this.obstacle){
+        const newxy =  obse.inrange(player.x,player.y,Constants.PLAYER_RADIUS)
+        
+        player.x = newxy[0]
+        player.y = newxy[1]
+      }
+    });
+
     // Update each player
     Object.keys(this.sockets).forEach(playerID => {
       const player = this.players[playerID];
@@ -97,9 +129,7 @@ class Game {
     });
     this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
 
-    
-    
-    this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
+
     // Check if any players are dead
     Object.keys(this.sockets).forEach(playerID => {
       const socket = this.sockets[playerID];

@@ -1,6 +1,6 @@
 const Constants = require('../shared/constants');
 
-function applychestCollisions(chests, bullets) {
+function applychestCollisions(chests, bullets,parents) {
     const destroyedBullets = [];
     for (const element of bullets) {
       // Look for a player (who didn't create the bullet) to collide each bullet with.
@@ -8,12 +8,18 @@ function applychestCollisions(chests, bullets) {
       for (let j = 0; j < chests.length; j++) {
         const bullet = element;
         const chest = chests[j];
-        if (
-          
-          chest.distanceTo(bullet) <= 50
-        ) {
+        if (chest.distanceTochest(bullet) <= 50) {
           destroyedBullets.push(bullet);
-          chest.takeBulletDamage();
+
+          if(chest.checkinconsole(parents[bullet.parentID])){
+            chest.addplayers(bullet.parentID)
+            if(chest.players.length == 2){
+              chest.takeBulletDamage();
+            }
+            console.log(chest.players)
+          }else{
+            chest.removePlayer(bullet.parentID)
+          }
           
           break;
         }
