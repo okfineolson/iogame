@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple game theory .io game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" href="/assets/icon64.png">
+  <meta property="description" content="A complete example multiplayer .io web game implemented from scratch. Built with Javascript and Node.js. Open source on Github.">
+  <meta property="og:title" content="Simple game theory .io game">
+  <meta property="og:description" content="A complete example multiplayer .io web game implemented from scratch. Built with Javascript and Node.js,utilized https://github.com/vzhou842/example-.io-game' ">
+  <meta property="og:image" content="/assets/icon1200.png">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58664433-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-58664433-3');
+  </script>
+</head>
+<body>
+  <canvas id="game-canvas"></canvas>
+  <div id="play-menu" class="hidden">
+    <h1>Io game</h1>
+      This is a universe full of danger and opportunity<br />
+      there are rich mineral resources for travelers to mine <br />
+      But there is also no security  <br />
+      Where you can choose to cooperate with others or to destroy them<br />
+      Also you can agree to cooperate, and then ruthlessly betray them. <br />
+      Be careful <br />
+      here<br />
+      kindness is the most useless thing
+   
+    <input type="text" id="username-input" placeholder="Username" />
+    <button id="play-button">PLAY</button>
+    <button id="tutorial-button">tutorial</button>
+    
+  </div>
+
+  <div id="tut" class="hidden">
+    <h1>Tutorial~</h1>
+    <p>
+      Use "W","A',"S","D" to manipulate the player<br />
+      Use mouse to control the shooting direction<br />
+      "Q" to shooting<br />
+      "E" to stop moving <br />
+      "F" to change the cooperation mode
+       
+    </p>
+    <button id="next1" class="hidden">Next</button>
+  </div>
+  <div id="tut1" class="hidden">
+    <h1>Tutorial~</h1>
+    <p>
+      Player can swithch cooperation mode between ON and OFF <br />
+      Mineral resources that require cooperation to collect will appear in the universe<br />
+      cooperation is considered to start when two players stand in the designated collection point<br />
+      Players can choose to betray allies on the way to mining and have the opportunity to gain greater profits<br />
+      But if no one chooses to cooperate, then they will both lose and be punished<br />
+      The specific payoff are:<br />
+      cooperate/cooperate   50/50<br />
+      cooperate/betrayal   -50/70<br />
+      betrayal/betrayal   -20/-20<br />
+    </p>
+    <button id="close-tutorial-button" class="hidden">Close</button>
+  </div>
+
+
+
+
+  <div id="leaderboard" class="hidden">
+    <table>
+      <tr>
+        <th>Username</th>
+        <th>Score</th>
+      </tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+    </table>
+  </div>
+  <div id="disconnect-modal" class="hidden">
+    <div>
+      <h2>Disconnected from Server </h2>
+      <hr />
+      <button id="reconnect-button">RECONNECT</button>
+    </div>
+  </div>
+</body>
+</html>
